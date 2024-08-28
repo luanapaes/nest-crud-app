@@ -11,4 +11,7 @@ export class Todo {
     @Column()
     title: string;
 
+    @Column()
+    description: string;
+
 }
