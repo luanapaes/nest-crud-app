@@ -2,6 +2,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Todo } from "./todo.entity";
 import { CreateTodoDTO } from "./dto/create-todo.dto";
+import { NotFoundException } from "@nestjs/common";
 
 export class TodosService {
     constructor(
@@ -24,6 +25,8 @@ export class TodosService {
 
     async findById(id: number) {
 
+        await this.exists(id);
+
         const todoById = await this.todoRepository.findOneBy({
             id
         });
@@ -32,6 +35,8 @@ export class TodosService {
     }
 
     async update(id: number, todo: CreateTodoDTO) {
+
+        await this.exists(id);
 
         const updatedTodo = await this.todoRepository.findOne({
             where: {
@@ -47,6 +52,8 @@ export class TodosService {
     }
 
     async delete(id: number) {
+        
+        await this.exists(id);
 
         //verifica se o todo existe
         const todo = await this.todoRepository.findOne({
@@ -57,5 +64,16 @@ export class TodosService {
 
         return await this.todoRepository.remove(todo)
 
+    }
+
+    async exists(id: number){
+
+        if(!(await this.todoRepository.exists({
+            where: {
+                id
+            }
+        }))) {
+            throw new NotFoundException(`Todo com id ${id} não encontrado.`)
+        }
     }
 }
