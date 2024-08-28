@@ -19,7 +19,7 @@ export class TodosController{
     }
 
     @Get(":id")
-    findById(id: number){
+    findById(@Param("id") id: number){
         return this.todosService.findById(id)
     }
 

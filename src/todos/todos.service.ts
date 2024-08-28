@@ -5,36 +5,34 @@ import { CreateTodoDTO } from "./dto/create-todo.dto";
 
 export class TodosService {
     constructor(
-        @InjectRepository(Todo) 
+        @InjectRepository(Todo)
         private readonly todoRepository: Repository<Todo>
-    ){}
+    ) { }
 
-    async createTodo(todo: CreateTodoDTO){
+    async createTodo(todo: CreateTodoDTO) {
 
         const newTodo = this.todoRepository.create(todo);
-        
+
         return await this.todoRepository.save(newTodo);
 
     }
 
-    async findAll(){
+    async findAll() {
         const todos = await this.todoRepository.find();
-        console.log(todos)
         return todos;
     }
 
-    async findById(id: number){
-        const todoById = await this.todoRepository.findOne({
-            where: {
-                id: id
-            }
+    async findById(id: number) {
+
+        const todoById = await this.todoRepository.findOneBy({
+            id
         });
 
         return todoById;
     }
 
-    async update(id: number, todo: CreateTodoDTO){
-        
+    async update(id: number, todo: CreateTodoDTO) {
+
         const updatedTodo = await this.todoRepository.findOne({
             where: {
                 id
@@ -48,7 +46,7 @@ export class TodosService {
 
     }
 
-    async delete(id: number){
+    async delete(id: number) {
 
         //verifica se o todo existe
         const todo = await this.todoRepository.findOne({
