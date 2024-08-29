@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards } from "@nestjs/common";
 import { TodosService } from "./todos.service";
 import { CreateTodoDTO } from "./dto/create-todo.dto";
+import { AuthGuard } from "src/guards/auth.guard";
 
+@UseGuards(AuthGuard)
 @Controller('todos')
 export class TodosController{
     constructor(
@@ -9,7 +11,9 @@ export class TodosController{
     ){}
 
     @Post()
-    create(@Body() todo: CreateTodoDTO){
+    create(@Body() todo: CreateTodoDTO, @Request() req) {
+        // Adiciona o userId do payload ao novo todo
+        todo.userId = req.user.id;
         return this.todosService.createTodo(todo);
     }
 
