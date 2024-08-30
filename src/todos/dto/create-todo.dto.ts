@@ -1,4 +1,5 @@
 export class CreateTodoDTO {
+    userId?: number;
     title: string;
-    descriptin: string;
+    description: string;
 }
