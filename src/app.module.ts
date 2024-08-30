@@ -1,10 +1,13 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { TodosModule } from './todos/todos.module';
-import { join } from 'path';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { UserEntity } from './user/entity/user.entity';
+import { TodoEntity } from './todos/todo.entity';
 
 
 @Module({
@@ -17,10 +20,12 @@ import { join } from 'path';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [join(process.cwd(), 'dist/**/*.entity.js')],
+      entities: [UserEntity, TodoEntity],
       synchronize: process.env.ENV === "development",
     }),
-    forwardRef(() => TodosModule)
+    TodosModule,
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
