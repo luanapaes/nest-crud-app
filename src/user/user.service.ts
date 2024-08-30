@@ -32,6 +32,15 @@ export class UserService {
         return this.usersRepository.save([user]);
     }
 
+    async getUserByIdUsingRelations(userId: number): Promise<UserEntity>{
+        return this.usersRepository.findOne({
+            where: {
+                id: userId
+            },
+            relations: ['todos']
+        })
+    }
+
     async list() {
         return this.usersRepository.find();
 
