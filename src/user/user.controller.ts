@@ -21,9 +21,10 @@ export class UserController{
         return this.userService.list()
     }
 
-    @Get(':id')
-    async readOne(@Param("id") id: number) {
-        return this.userService.listOne(id)
+
+    @Get(':userId')
+    async getUserById(@Param('userId') userId:number){
+        return this.userService.getUserByIdUsingRelations(userId)
     }
 
     @Put(':id')
