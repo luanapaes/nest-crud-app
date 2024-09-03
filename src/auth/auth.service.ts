@@ -6,6 +6,7 @@ import { UserService } from "src/user/user.service";
 import { Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { AuthRegisterDTO } from "./dto/auth-register.dto";
+import { MailerService } from "@nestjs-modules/mailer/dist";
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,8 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly userService: UserService,
         @InjectRepository(UserEntity)
-        private userRepository: Repository<UserEntity>
+        private userRepository: Repository<UserEntity>,
+        private readonly mailer: MailerService
     ){}
 
     createToken(user) {
@@ -87,7 +89,26 @@ export class AuthService {
             throw new UnauthorizedException("E-mail incorreto.")
         }
 
+        const token = this.jwtService.sign({
+            id: user.id
+        },{
+            secret: process.env.JWT_SECRET,
+            expiresIn: "30 minutes",
+            subject: String(user.id),
+            issuer: 'forget',
+            audience: 'users'
+        })
+
         //To do: enviar email de recuperação
+        await this.mailer.sendMail({
+            subject: 'Recuperação de Senha',
+            to: 'luanapaes.dev@gmail.com',
+            template: 'forget',
+            context: {
+                name: user.name,
+                token
+            }
+        })
 
         return true;
 
@@ -96,6 +117,7 @@ export class AuthService {
     async reset(password: string, token: string) {
         try {
             const data: any = this.jwtService.verify(token, {
+                secret: process.env.JWT_SECRET,
                 issuer: 'forget',
                 audience: 'users',
             })
