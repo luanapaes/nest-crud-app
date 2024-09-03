@@ -8,6 +8,8 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { UserEntity } from './user/entity/user.entity';
 import { TodoEntity } from './todos/todo.entity';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 
 
 @Module({
@@ -26,6 +28,26 @@ import { TodoEntity } from './todos/todo.entity';
     TodosModule,
     UserModule,
     AuthModule,
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.ethereal.email',
+        port: 587,
+        auth: {
+          user: 'darrion0@ethereal.email',
+          pass: '9QA75jpNEMxpdkeAUC'
+        }
+      },
+      defaults: {
+        from: '"Todo" <darrion0@ethereal.email>',
+      },
+      template: {
+        dir: __dirname + '/templates',
+        adapter: new PugAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

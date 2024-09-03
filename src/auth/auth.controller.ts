@@ -25,5 +25,10 @@ export class AuthController{
         return this.authService.reset(password, token);
     }
 
+    @Post('forget')
+    async forget(@Body() { email}: AuthLoginDTO) {
+        return this.authService.forget(email);
+    }
+
     
 }
