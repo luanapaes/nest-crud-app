@@ -1,6 +1,7 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { TodoEntity } from "src/todos/todo.entity";
 import { Role } from "src/enums/role.enum";
+import { MarcaEntity } from "src/marca/entity/marca.entity";
 
 @Entity({
     name: 'users'
@@ -42,5 +43,8 @@ export class UserEntity{
 
     @OneToMany(() => TodoEntity, (todo) => todo.user)
     todos?: TodoEntity[];
+
+    @OneToMany(() => MarcaEntity, (marca) => marca.user)
+    marcas?: MarcaEntity[];
 
 }
